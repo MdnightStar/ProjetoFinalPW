@@ -19,7 +19,7 @@
             if($row['tipo_usuario'] == 'aluno'){
                 $_SESSION['user'] = $row['email'];
                 $_SESSION['id'] = $row['id'];
-                header("Location: aluno.php");
+                header("Location: index.php");
                 exit;
             }
             elseif($row['tipo_usuario'] == 'professor'){
