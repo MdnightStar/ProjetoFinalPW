@@ -2,7 +2,7 @@
 require "conexao.php";
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $stmt = $conn->prepare("INSERT INTO provas (month, number, context, date) VALUES (?,?,?,?)");
+    $stmt = $conn->prepare("INSERT INTO provas (month, number, content, data) VALUES (?,?,?,?)");
     $stmt->execute([$_POST['month'], $_POST['eventNumber'], $_POST['eventInfo'], $_POST['eventDate']]);
     header("Location: agenda.php");
     exit;

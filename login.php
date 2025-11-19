@@ -6,7 +6,7 @@
          $email = $_POST['email'];
          $senha = $_POST['senha'];
 
-         $select = $pdo -> prepare("SELECT*FROM usuario WHERE email = :email AND senha = :senha");
+         $select = $conn -> prepare("SELECT*FROM usuario WHERE email = :email AND senha = :senha");
          $select -> execute(['email' => $email,'senha' => $senha]);
 
          if($select->rowCount()>0){

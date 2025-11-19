@@ -9,9 +9,9 @@ $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // === Editar prova ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
-    $sql = "UPDATE provas SET number = ?, content = ?, date = ? WHERE id = ?";
+    $sql = "UPDATE provas SET number = ?, content = ?, data = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$_POST['number'], $_POST['content'], $_POST['date'], $_POST['id']]);
+    $stmt->execute([$_POST['number'], $_POST['content'], $_POST['data'], $_POST['id']]);
     header("Location: agenda.php");
     exit;
 }
@@ -102,8 +102,8 @@ body { background:#f5f0ff; }
             $has = true;
             ?>
             <div class="event-item" onclick="openEditModal(<?= $ev['id'] ?>)">
-              <strong>Avaliação <?= $ev['number'] ?></strong> — <?= $ev['date'] ?><br>
-              <?= nl2br(htmlspecialchars($ev['context'])) ?>
+              <strong>Avaliação <?= $ev['number'] ?></strong> — <?= $ev['data'] ?><br>
+              <?= nl2br(htmlspecialchars($ev['content'])) ?>
             </div>
           <?php }
         }
@@ -131,7 +131,7 @@ body { background:#f5f0ff; }
           <label>Conteúdo</label>
           <textarea name="content" id="edit-content" class="form-control mb-2" rows="3" required></textarea>
           <label>Data</label>
-          <input type="date" name="date" id="edit-date" class="form-control mb-2" required>
+          <input type="date" name="data" id="edit-date" class="form-control mb-2" required>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Salvar</button>
@@ -156,7 +156,7 @@ function openEditModal(id){
         document.getElementById('edit-id').value = id;
         document.getElementById('edit-number').value = d.event.number;
         document.getElementById('edit-content').value = d.event.content;
-        document.getElementById('edit-date').value = d.event.date;
+        document.getElementById('edit-date').value = d.event.data;
         new bootstrap.Modal(document.getElementById('editModal')).show();
       }
     });
