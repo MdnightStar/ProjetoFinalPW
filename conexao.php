@@ -7,7 +7,7 @@ $pass = ''; // Senha padrão (vazia)
     try {
     // A linha de conexão
     $conn = new PDO("mysql:host=$host;port= 3308;dbname=$db;charset=utf8", $user,$pass);
-    echo "Conexao realizada com sucesso";
+    //echo "Conexao realizada com sucesso";
     // Configura o PDO para lançar exceções em caso de erro
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {

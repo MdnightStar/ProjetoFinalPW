@@ -2,13 +2,13 @@
 require "conexao.php";
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $stmt = $conn->prepare("INSERT INTO provas (month, number, content, data) VALUES (?,?,?,?)");
-    $stmt->execute([$_POST['month'], $_POST['eventNumber'], $_POST['eventInfo'], $_POST['eventDate']]);
+    $stmt = $conn->prepare("INSERT INTO provas (mes, numero, conteudo, data) VALUES (?,?,?,?)");
+    $stmt->execute([$_POST['mes'], $_POST['numeroEvento'], $_POST['infoEvento'], $_POST['dataEvento']]);
     header("Location: agenda.php");
     exit;
 }
 
-$month = $_GET['month'] ?? '';
+$mes = $_GET['mes'] ?? '';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -20,18 +20,18 @@ $month = $_GET['month'] ?? '';
 <body>
 <div class="container mt-5">
   <div class="card p-4">
-    <h3>Adicionar Prova - <?= $month ?></h3>
+    <h3>Adicionar Prova - <?= $mes ?></h3>
     <form method="post">
-        <input type="hidden" name="month" value="<?= $month ?>">
+        <input type="hidden" name="mes" value="<?= $mes ?>">
 
         <label>Número da avaliação:</label>
-        <input type="number" name="eventNumber" class="form-control mb-2" required>
+        <input type="number" name="numeroEvento" class="form-control mb-2" required>
 
         <label>Conteúdo:</label>
-        <textarea name="eventInfo" class="form-control mb-2" required></textarea>
+        <textarea name="infoEvento" class="form-control mb-2" required></textarea>
 
         <label>Data:</label>
-        <input type="date" name="eventDate" class="form-control mb-3" required>
+        <input type="date" name="dataEvento" class="form-control mb-3" required>
 
         <button type="submit" class="btn btn-primary">Salvar</button>
         <a href="agenda.php" class="btn btn-secondary">Cancelar</a>

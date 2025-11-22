@@ -1,31 +1,31 @@
 <?php
 require "conexao.php";
 
-// === Buscar todas as provas do banco ===
-$stmt = $conn->query("SELECT * FROM provas ORDER BY FIELD(month,
+//Busca as provas no banco
+$stmt = $conn->query("SELECT * FROM provas ORDER BY FIELD(mes,
     'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro')");
 $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// === Editar prova ===
+//Edita prova
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
-    $sql = "UPDATE provas SET number = ?, content = ?, data = ? WHERE id = ?";
+    $sql = "UPDATE provas SET numero = ?, conteudo = ?, data = ? WHERE idProva = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$_POST['number'], $_POST['content'], $_POST['data'], $_POST['id']]);
+    $stmt->execute([$_POST['numero'], $_POST['conteudo'], $_POST['data'], $_POST['id']]);
     header("Location: agenda.php");
     exit;
 }
 
-// === Excluir prova ===
+//Exclui prova
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
-    $sql = "DELETE FROM provas WHERE id = ?";
+    $sql = "DELETE FROM provas WHERE idProva = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_POST['id']]);
     header("Location: agenda.php");
     exit;
 }
-
-$months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+// vetor que na página vai gerar os cards com os meses do calendário
+$meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
            "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 ?>
 <!doctype html>
@@ -78,7 +78,7 @@ body { background:#f5f0ff; }
     <span class="title-large">Test Organizer</span>
   </div>
 </nav>
-
+<!-- Aqui define o nome da matéria e do professor -->
 <div class="container mt-3 text-center">
   <input id="subjectInput" class="form-control name-input" placeholder="Nome da Matéria (Enter)">
   <div id="subjectDisplay" style="display:none;"></div>
@@ -86,28 +86,29 @@ body { background:#f5f0ff; }
   <input id="teacherInput" class="form-control name-input mt-2" placeholder="Nome do Professor (Enter)">
   <div id="teacherDisplay" style="display:none;"></div>
 </div>
-
+<!-- Aqui gera os cards do calendário -->
 <div class="months-grid">
-  <?php foreach ($months as $m): ?>
+  <?php foreach ($meses as $m): ?>
     <div class="month-card">
       <div class="d-flex justify-content-between mb-2">
         <h5><?= $m ?></h5>
-        <div class="add-circle" onclick="location.href='form.php?month=<?= $m ?>'">+</div>
+        <div class="add-circle" onclick="location.href='form.php?mes=<?= $m ?>'">+</div>
       </div>
       <div class="events-wrap">
         <?php 
         $has = false;
         foreach($events as $ev){
-          if($ev['month'] === $m){
+          if($ev['mes'] === $m){
             $has = true;
             ?>
-            <div class="event-item" onclick="openEditModal(<?= $ev['id'] ?>)">
-              <strong>Avaliação <?= $ev['number'] ?></strong> — <?= $ev['data'] ?><br>
-              <?= nl2br(htmlspecialchars($ev['content'])) ?>
+            <div class="event-item" onclick="openEditModal(<?= $ev['idProva'] ?>)">
+              <strong>Avaliação <?= $ev['numero'] ?></strong> — <?= $ev['data'] ?><br>
+              <?= nl2br(htmlspecialchars($ev['conteudo'])) ?>
             </div>
           <?php }
-        }
+        } 
         if(!$has) echo "<div class='text-muted'>Nenhuma prova</div>";
+        // Se o events não puxar nada do bd define o texto acima para todos os cards
         ?>
       </div>
     </div>
@@ -127,9 +128,9 @@ body { background:#f5f0ff; }
         </div>
         <div class="modal-body">
           <label>Número</label>
-          <input type="number" name="number" id="edit-number" class="form-control mb-2" required>
+          <input type="number" name="numero" id="edit-number" class="form-control mb-2" required>
           <label>Conteúdo</label>
-          <textarea name="content" id="edit-content" class="form-control mb-2" rows="3" required></textarea>
+          <textarea name="conteudo" id="edit-content" class="form-control mb-2" rows="3" required></textarea>
           <label>Data</label>
           <input type="date" name="data" id="edit-date" class="form-control mb-2" required>
         </div>
@@ -154,8 +155,8 @@ function openEditModal(id){
     .then(d=>{
       if(d.success){
         document.getElementById('edit-id').value = id;
-        document.getElementById('edit-number').value = d.event.number;
-        document.getElementById('edit-content').value = d.event.content;
+        document.getElementById('edit-number').value = d.event.numero;
+        document.getElementById('edit-content').value = d.event.conteudo;
         document.getElementById('edit-date').value = d.event.data;
         new bootstrap.Modal(document.getElementById('editModal')).show();
       }
